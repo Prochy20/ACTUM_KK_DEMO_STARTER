@@ -1,0 +1,23 @@
+{
+  "name": "cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/app.js",
+  "scripts": {
+    "dev": "nodemon ./src/app.js",
+    "start": "node ./src/app.js"
+  },
+  "keywords": [],
+  "author": "Martin Procházka",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.14.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "exec-sh": "^0.4.0",
+    "inquirer": "^8.2.3"
+  }
+}
