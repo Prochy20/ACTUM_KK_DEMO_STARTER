@@ -17,6 +17,8 @@
     "nodemon": "^2.0.15"
   },
   "dependencies": {
+    "cli-color": "^2.0.2",
+    "envfile": "^6.17.0",
     "exec-sh": "^0.4.0",
     "inquirer": "^8.2.3"
   }

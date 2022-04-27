@@ -1,10 +1,16 @@
+/* eslint-disable no-console */
 const inquirer = require('inquirer');
+const clc = require('cli-color');
 
 const styles = require('./utils/styles');
 const git = require('./utils/git');
 const deploy = require('./utils/vercel');
 
+const msg = require('./cli');
+
 function run() {
+    console.log(`${clc.bold(clc.green((msg.logo)))}`);
+
     inquirer
         .prompt([
             {
@@ -12,6 +18,13 @@ function run() {
                 name: 'cleanDemo',
                 message: 'Do you want to prepare clean demo ENV?',
                 default: true,
+            },
+            {
+                type: 'input',
+                name: 'kenticoProjectID',
+                message: 'State your Kentico Kontent Project ID (leave blank if you dont want to set it in config)',
+                default: null,
+                when: (answers) => answers.cleanDemo,
             },
             {
                 type: 'confirm',
@@ -88,13 +101,21 @@ function run() {
                 message: 'Do you want to deploy your project?',
                 default: true,
             },
+            {
+                type: 'confirm',
+                name: 'localDependencies',
+                message: 'Do you want to instal local dependencies?',
+                default: false,
+            },
         ])
         .then(async (answers) => {
             if (answers.cleanDemo) {
-                await git.prepareDemoProject();
+                console.log(`${clc.bold(clc.green((msg.creatLocalRepo)))}`);
+                await git.prepareDemoProject(answers.localDependencies, answers.kenticoProjectID);
             }
 
             if (answers.changeColors) {
+                console.log(`${clc.bold(clc.green((msg.setColors)))}`);
                 await styles.writeStyles(
                     answers.primary,
                     answers.primaryHover,
@@ -109,7 +130,14 @@ function run() {
             }
 
             if (answers.deploy) {
+                console.log(`${clc.bold(clc.green((msg.deploy)))}`);
                 await deploy.deploy();
+            }
+
+            console.log(`${clc.bold(clc.green((msg.done)))}`);
+
+            if (answers.deploy) {
+                console.log(clc.bold(clc.redBright('FIND TICK SYMBOL ( ✅ ) ABOVE TO SEE PRODUCTION URL')));
             }
         });
 }

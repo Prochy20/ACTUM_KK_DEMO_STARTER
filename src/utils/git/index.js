@@ -1,15 +1,21 @@
 const execute = require('exec-sh').promise;
-const path = require('path');
 
-const root = path.join(__dirname, '../../../../');
-const demoDir = path.join(root, 'demo');
+const env = require('./environment');
+const { PATH } = require('../../config');
 
-async function prepareDemoProject() {
+async function prepareDemoProject(localDependencies = true, projectID = null) {
     try {
-        const removeDir = await execute('rm -rf demo', { cwd: root });
-        const clone = await execute('git clone https://github.com/Kentico/kontent-sample-app-vue.git demo', { cwd: root });
-        const instalDependencies = await execute('yarn', { cwd: demoDir });
-        return removeDir.stderr === '' && clone.stderr === '' && instalDependencies.stderr === '';
+        await execute('rm -rf demo', { cwd: PATH.TEMP });
+        await execute('git clone https://github.com/Kentico/kontent-sample-app-vue.git demo', { cwd: PATH.TEMP });
+        if (localDependencies) {
+            await execute('yarn', { cwd: PATH.DEMO });
+        }
+
+        if (projectID !== null) {
+            await env.createDotENV(projectID);
+        }
+
+        return true;
     } catch (ex) {
         return ex;
     }

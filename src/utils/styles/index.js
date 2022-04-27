@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { PATH } = require('../../config');
 
 const PLACEHOLDERS = require('./placeholders');
 
@@ -22,7 +23,7 @@ async function writeStyles(primary, primaryHover, secondary, btnText, btnBg, btn
         result = replaceAll(result, PLACEHOLDERS.BTN.BACKGROUND_HOVER, btnBgHover);
         result = replaceAll(result, PLACEHOLDERS.BTN.BORDER_HOVER, btnBorderHover);
 
-        fs.writeFileSync(path.join(__dirname, '../../../../demo/src/index.css'), result.toString());
+        fs.writeFileSync(path.join(PATH.DEMO, '/src/index.css'), result.toString());
 
         return true;
     } catch (ex) {
