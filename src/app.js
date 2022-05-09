@@ -5,11 +5,15 @@ const clc = require('cli-color');
 const styles = require('./utils/styles');
 const git = require('./utils/git');
 const deploy = require('./utils/vercel');
+const config = require('./config');
 
 const msg = require('./cli');
+const kentico = require('./utils/kentico');
 
-function run() {
+async function run() {
     console.log(`${clc.bold(clc.green((msg.logo)))}`);
+
+    const envsRaw = await kentico.getEnvironments(config.KONTENT.PROJECT_ID);
 
     inquirer
         .prompt([
@@ -20,11 +24,25 @@ function run() {
                 default: true,
             },
             {
-                type: 'input',
+                type: 'list',
                 name: 'kenticoProjectID',
-                message: 'State your Kentico Kontent Project ID (leave blank if you dont want to set it in config)',
-                default: null,
+                message: 'Which Kentico project to use?',
+                default: config.KONTENT.MASTER_ENV_ID,
+                choices: () => {
+                    const result = envsRaw.environments.map((item) => ({
+                        name: item.name,
+                        value: item.id,
+                    }));
+                    return result;
+                },
                 when: (answers) => answers.cleanDemo,
+            },
+            {
+                type: 'input',
+                name: 'projectName',
+                message: 'State your new project name',
+                default: 'DEMO',
+                when: (answers) => answers.kenticoProjectID === 0,
             },
             {
                 type: 'confirm',
@@ -106,6 +124,7 @@ function run() {
                 name: 'localDependencies',
                 message: 'Do you want to instal local dependencies?',
                 default: false,
+                when: (answers) => answers.cleanDemo,
             },
         ])
         .then(async (answers) => {

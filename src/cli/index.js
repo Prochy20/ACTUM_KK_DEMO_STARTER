@@ -1,3 +1,6 @@
+/**
+ * @see https://textkool.com/en/ascii-art-generator?hl=default&vl=default&font=ANSI%20Shadow&text=Kentico%20demo%20deploy
+ */
 module.exports = {
     logo:
     `
